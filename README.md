@@ -1,52 +1,58 @@
 # devops-toolkit
 
-> Production-grade DevOps automation toolkit | Terraform, Kubernetes, CI/CD, Monitoring & Cloud Infrastructure as Code
+> **Legacy / superseded repository**
 
-[![Terraform](https://img.shields.io/badge/Terraform-7B36BC?style=flat-square&logo=terraform)](https://www.terraform.io/)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat-square&logo=kubernetes)](https://kubernetes.io/)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker)](https://docker.com/)
-[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=github-actions)](https://github.com/features/actions)
+A small historical infrastructure-and-CI reference containing an AWS Terraform example and an older CI/CD workflow experiment.
 
-## Modules
+For the actively maintained infrastructure foundation on this profile, see [`cloud-infra`](https://github.com/SKYDRAGO-DEV/cloud-infra).
 
-| Module | Description | Status |
-|--------|-------------|--------|
-| `terraform/aws-infra` | AWS baseline infrastructure | ✅ Stable |
-| `terraform/gcp-infra` | GCP baseline infrastructure | 🚧 Beta |
-| `kubernetes/app-templates` | K8s application templates | ✅ Stable |
-| `ci-cd` | GitHub Actions workflows | ✅ Stable |
-| `monitoring` | Prometheus + Grafana stack | 🚧 Beta |
+## Why this repository remains public
 
-## Quick Start
+This repository preserves earlier infrastructure work and commit history, but it is **not a flagship project** and should not be interpreted as a production-ready DevOps platform.
 
-\`\`\`bash
-# Terraform AWS setup
-cd terraform/aws-infra
-terraform init
-terraform plan -var-file=prod.tfvars
-terraform apply
+The current implementation contains:
 
-# Kubernetes deployment
-kubectl apply -f kubernetes/app-templates/api-service.yaml
+- `terraform/aws-infra/main.tf` — an AWS VPC/subnet Terraform example
+- `.github/workflows/ci.yml` — static Terraform validation
 
-# CI/CD pipeline (GitHub Actions)
-gh workflow run deploy
-\`\`\`
+The previous README described GCP infrastructure, Kubernetes templates, monitoring stacks, and production-grade deployment capabilities that are not present in the repository. Those claims have been removed.
 
-## Directory Structure
+## Validation
 
-\`\`\`
-.
-├── terraform/           # Infrastructure as Code
-│   ├── aws-infra/       # AWS resources
-│   └── gcp-infra/       # GCP resources
-├── kubernetes/          # K8s manifests
-│   ├── app-templates/   # Reusable templates
-│   └── monitoring/      # Observability stack
-├── ci-cd/               # CI/CD pipelines
-└── scripts/             # Automation scripts
-\`\`\`
+CI performs static Terraform quality checks without applying infrastructure:
 
-## License
+```text
+terraform fmt -check
+      ↓
+terraform init -backend=false
+      ↓
+terraform validate
+```
 
-MIT © SKYDRAGO-DEV
+No cloud credentials are required for these checks.
+
+## Repository layout
+
+```text
+devops-toolkit/
+├── terraform/
+│   └── aws-infra/
+│       └── main.tf
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+└── README.md
+```
+
+## Security and scope
+
+- No cloud credentials should be committed.
+- Terraform state may contain sensitive values and should be protected outside source control.
+- The configured backend identifiers are examples tied to the original environment and should be changed before reuse.
+- This repository does not claim active production deployment, monitoring, Kubernetes, container publishing, or financial-system infrastructure.
+
+## Portfolio role
+
+**Classification: MERGE / ARCHIVE candidate.**
+
+Useful concepts have a stronger home in `cloud-infra`; this repository is retained only as historical engineering context until repository-level archive controls are applied.
