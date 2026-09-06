@@ -2,32 +2,29 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Terraform Init (no validate — needs cloud creds)
-        run: |
-          for dir in terraform/*; do
-            [ -d "$dir" ] || continue
-            if [ -f "$dir/main.tf" ]; then
-              echo "=== $dir detected ==="
-              grep "^terraform\|^provider\|^resource\|^data " "$dir"/*.tf 2>/dev/null | head -5 || echo "empty"
-            fi
-          done
-          echo "CI check complete"
 
-  kubernetes:
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Validate YAML
-        run: |
-          find kubernetes -name "*.yaml" -o -name "*.yml" 2>/dev/null | while read f; do
-            python3 -c "import yaml; yaml.safe_load(open('$f'))" || echo "INVALID: $f"
-          done || echo "done"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Check formatting
+        run: terraform -chdir=terraform/aws-infra fmt -check -recursive
+
+      - name: Initialize without backend
+        run: terraform -chdir=terraform/aws-infra init -backend=false -input=false
+
+      - name: Validate
+        run: terraform -chdir=terraform/aws-infra validate -no-color
