@@ -1,0 +1,37 @@
+# Terraform working data and state
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Local variable files may contain environment-specific or sensitive values
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.json.example
+
+# Local Terraform overrides/configuration
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Credentials / keys
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local tooling
+.DS_Store
+.idea/
+.vscode/
